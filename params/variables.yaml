@@ -1,0 +1,929 @@
+# =============================================================================
+#  HS-3 GPR · VARIABLE REGISTER
+#  The ONE place numbers are typed. Code, notebooks, BUDGET.md and the website
+#  all read this file. Never hard-code a number anywhere else.
+# =============================================================================
+#
+#  HOW TO EDIT (on GitHub: open this file → pencil icon → "Commit changes")
+#    1. Find the variable by its key (e.g. f_center).
+#    2. Change `value` (SI units) and, if it changed, `status` and `source`.
+#    3. Open a pull request. Checks run automatically; a teammate reviews.
+#
+#  FIELDS
+#    name      Plain-English name
+#    symbol    Symbol used in docs/equations.md
+#    value     Number in SI units (write 20e6 or 20000000), text, a list, or null while TBD
+#    unit      Hz, m, s, W, K, dB, dBi, deg, bit, bit/s, B (bytes), kg, U, or "-" (none)
+#    range     [min, max] being considered (optional)
+#    status    TBD      → no value yet
+#              assumed  → placeholder or estimate; needs a source or a trade
+#              derived  → backed by an analysis (cite the notebook, EQ-ID or TS-ID)
+#              frozen   → agreed baseline; change only with a decision record (DR-xxx)
+#    quarter   Q1 | Q2 | Q3 — when it must be pinned down
+#    group     Category (used to group tables)
+#    owner     GitHub username, or a role until people are assigned:
+#              systems | radar-hw | scene | processing | comms | eps | gnc | structures
+#    source    Citation key from refs/references.bib, EQ-ID, TS-ID, DR-ID, notebook, or "team"
+#    drives    What this variable affects
+#    notes     Anything else
+#
+#  ADD A VARIABLE: copy any block, give it a new key (lowercase_with_underscores),
+#  fill the fields, and run `python tools/register.py` (or let the checks do it).
+# =============================================================================
+
+variables:
+
+  # ---------------------------------------------------------------- Requirements & target
+  roof_depth_max:
+    name: Deepest lava-tube roof to detect
+    symbol: d_max
+    value: 500
+    unit: m
+    range: [100, 1000]
+    status: assumed
+    quarter: Q1
+    group: Requirements & target
+    owner: systems
+    source: team (mission assumption)
+    drives: receive window, attenuation, frequency choice
+
+  tube_height_min:
+    name: Smallest tube height to detect
+    symbol: h_tube
+    value: null
+    unit: m
+    range: [20, 200]
+    status: TBD
+    quarter: Q1
+    group: Requirements & target
+    owner: systems
+    source: literature on lunar lava-tube sizes
+    drives: bandwidth (vertical resolution)
+
+  tube_width_min:
+    name: Smallest tube width to detect
+    symbol: w_tube
+    value: null
+    unit: m
+    range: [50, 1000]
+    status: TBD
+    quarter: Q1
+    group: Requirements & target
+    owner: systems
+    source: literature on lunar lava-tube sizes
+    drives: along-track resolution (SAR aperture)
+
+  snr_required:
+    name: SNR needed after processing to call a detection
+    symbol: SNR_req
+    value: 10
+    unit: dB
+    range: [6, 15]
+    status: assumed
+    quarter: Q1
+    group: Requirements & target
+    owner: systems
+    source: team; refine with the detection analysis in Q2
+    drives: transmit power, presum factor, SAR integration
+
+  vertical_resolution_req:
+    name: Required vertical resolution (in basalt)
+    symbol: δz_req
+    value: null
+    unit: m
+    range: [5, 50]
+    status: TBD
+    quarter: Q1
+    group: Requirements & target
+    owner: systems
+    source: derive from tube_height_min
+    drives: bandwidth
+
+  along_track_resolution_req:
+    name: Required along-track resolution
+    symbol: δx_req
+    value: 250
+    unit: m
+    range: [100, 1000]
+    status: assumed
+    quarter: Q1
+    group: Requirements & target
+    owner: systems
+    source: team; derive from tube_width_min
+    drives: synthetic aperture length, SAR gain, presum limit
+
+  target_sites:
+    name: Target sites
+    value: [Marius Hills Hole, Mare Tranquillitatis Hole, Mare Ingenii Hole]
+    unit: "-"
+    status: assumed
+    quarter: Q1
+    group: Requirements & target
+    owner: systems
+    source: kaku2017; haruyama2009
+    drives: orbit inclination, observation plan
+
+  passes_per_site:
+    name: Passes over each site
+    value: null
+    unit: "-"
+    range: [1, 10]
+    status: TBD
+    quarter: Q1
+    group: Requirements & target
+    owner: systems
+    source: observation plan
+    drives: observing time, data volume
+
+  # ---------------------------------------------------------------- Lunar environment
+  eps_regolith:
+    name: Relative permittivity, regolith
+    symbol: ε_reg
+    value: 2.7
+    unit: "-"
+    range: [2.3, 3.5]
+    status: assumed
+    quarter: Q1
+    group: Lunar environment
+    owner: scene
+    source: olhoeft1975 (εr ≈ 1.919^ρ with ρ ≈ 1.5 g/cm³)
+    drives: wave speed, depth conversion, surface reflection
+
+  eps_basalt:
+    name: Relative permittivity, solid mare basalt
+    symbol: ε_bas
+    value: 7.0
+    unit: "-"
+    range: [5.5, 9.0]
+    status: assumed
+    quarter: Q1
+    group: Lunar environment
+    owner: scene
+    source: olhoeft1975 (ρ ≈ 3.0 g/cm³)
+    drives: wave speed, depth conversion, roof/floor reflection
+
+  tan_delta_regolith:
+    name: Loss tangent, regolith
+    symbol: tanδ_reg
+    value: 0.005
+    unit: "-"
+    range: [0.001, 0.03]
+    status: assumed
+    quarter: Q1
+    group: Lunar environment
+    owner: scene
+    source: heiken1991 (RESEARCH NEEDED)
+    drives: attenuation
+    notes: Rises with density and TiO2 + FeO content.
+
+  tan_delta_basalt:
+    name: Loss tangent, mare basalt
+    symbol: tanδ_bas
+    value: 0.01
+    unit: "-"
+    range: [0.003, 0.06]
+    status: assumed
+    quarter: Q1
+    group: Lunar environment
+    owner: scene
+    source: heiken1991; ono2009 (RESEARCH NEEDED)
+    drives: attenuation — the real depth limit
+    notes: Biggest single uncertainty for 500 m penetration. Rises with TiO2 + FeO content; varies by site.
+
+  regolith_thickness:
+    name: Regolith thickness (mare)
+    symbol: t_reg
+    value: 5
+    unit: m
+    range: [2, 15]
+    status: assumed
+    quarter: Q1
+    group: Lunar environment
+    owner: scene
+    source: heiken1991 (verify)
+    drives: shallow reflections, losses
+
+  surface_rms_slope:
+    name: Surface RMS slope at wavelength scale
+    symbol: s_rms
+    value: null
+    unit: deg
+    range: [1, 10]
+    status: TBD
+    quarter: Q1
+    group: Lunar environment
+    owner: scene
+    source: LRO LOLA data
+    drives: surface scattering, clutter strength
+
+  dem_source:
+    name: Elevation model for clutter simulation
+    value: LRO LOLA (resolution TBD)
+    unit: "-"
+    status: assumed
+    quarter: Q1
+    group: Lunar environment
+    owner: scene
+    source: team
+    drives: clutter prediction (Q3)
+
+  galactic_noise_model:
+    name: Galactic noise model
+    value: "ITU-R P.372: Fa = 52 − 23·log10(f / 1 MHz) dB above kT0B"
+    unit: "-"
+    status: assumed
+    quarter: Q1
+    group: Lunar environment
+    owner: scene
+    source: itur_p372 (verify against measured sky spectra)
+    drives: noise floor (dominant at HF)
+
+  ionosphere_correction:
+    name: Ionosphere correction needed?
+    value: not planned (assumed negligible at the Moon; verify)
+    unit: "-"
+    status: assumed
+    quarter: Q1
+    group: Lunar environment
+    owner: scene
+    source: team
+    drives: ground processing step 20
+
+  # ---------------------------------------------------------------- Orbit & spacecraft
+  altitude_nominal:
+    name: Nominal altitude
+    symbol: h
+    value: 50e3
+    unit: m
+    range: [30e3, 100e3]
+    status: assumed
+    quarter: Q1
+    group: Orbit & spacecraft
+    owner: gnc
+    source: team (mission assumption)
+    drives: echo delay, footprint, SNR, SAR aperture
+
+  altitude_min:
+    name: Lowest altitude
+    symbol: h_min
+    value: 30e3
+    unit: m
+    status: assumed
+    quarter: Q1
+    group: Orbit & spacecraft
+    owner: gnc
+    source: team (mission assumption)
+    drives: chirp length limit, timing
+
+  altitude_max:
+    name: Highest altitude
+    symbol: h_max
+    value: 100e3
+    unit: m
+    status: assumed
+    quarter: Q1
+    group: Orbit & spacecraft
+    owner: gnc
+    source: team (mission assumption)
+    drives: weakest echoes, timing
+
+  inclination:
+    name: Orbit inclination
+    symbol: i
+    value: null
+    unit: deg
+    range: [0, 90]
+    status: TBD
+    quarter: Q1
+    group: Orbit & spacecraft
+    owner: gnc
+    source: GNC team
+    drives: which target sites the ground track reaches
+
+  orbit_knowledge_error:
+    name: Position knowledge error (1σ)
+    symbol: σ_pos
+    value: null
+    unit: m
+    range: [1, 1000]
+    status: TBD
+    quarter: Q1
+    group: Orbit & spacecraft
+    owner: gnc
+    source: FOUND + ground tracking
+    drives: receive-window placement, SAR focusing
+
+  attitude_knowledge_error:
+    name: Attitude knowledge error (1σ)
+    symbol: σ_att
+    value: null
+    unit: deg
+    range: [0.01, 1]
+    status: TBD
+    quarter: Q1
+    group: Orbit & spacecraft
+    owner: gnc
+    source: LOST / ADCS team
+    drives: antenna-pattern knowledge
+
+  pointing_accuracy:
+    name: Antenna pointing accuracy
+    value: null
+    unit: deg
+    range: [0.5, 10]
+    status: TBD
+    quarter: Q1
+    group: Orbit & spacecraft
+    owner: gnc
+    source: ADCS team
+    drives: antenna pattern on the ground
+
+  payload_power_orbit_avg:
+    name: Orbit-average power available to the radar
+    symbol: P_avail
+    value: null
+    unit: W
+    range: [2, 30]
+    status: TBD
+    quarter: Q1
+    group: Orbit & spacecraft
+    owner: eps
+    source: EPS team
+    drives: observing minutes per orbit
+
+  payload_power_peak:
+    name: Peak power available to the radar
+    symbol: P_peak_avail
+    value: null
+    unit: W
+    range: [10, 100]
+    status: TBD
+    quarter: Q1
+    group: Orbit & spacecraft
+    owner: eps
+    source: EPS team
+    drives: transmit power, capacitor bank
+
+  payload_mass:
+    name: Mass allocation (radar + antenna)
+    value: null
+    unit: kg
+    range: [1, 5]
+    status: TBD
+    quarter: Q1
+    group: Orbit & spacecraft
+    owner: structures
+    source: structures team
+    drives: antenna design
+
+  payload_volume:
+    name: Stowed volume allocation (radar + antenna)
+    value: null
+    unit: U
+    range: [1, 4]
+    status: TBD
+    quarter: Q1
+    group: Orbit & spacecraft
+    owner: structures
+    source: structures team
+    drives: antenna deployment design
+
+  bus_emi_limit:
+    name: Allowed spacecraft self-noise in the radar band
+    value: null
+    unit: dB
+    status: TBD
+    quarter: Q1
+    group: Orbit & spacecraft
+    owner: systems
+    source: team
+    drives: noise floor
+    notes: State as dB below the galactic noise floor at f_center.
+
+  # ---------------------------------------------------------------- Waveform & timing
+  f_center:
+    name: Center frequency
+    symbol: f0
+    value: 20e6
+    unit: Hz
+    range: [5e6, 60e6]
+    status: assumed
+    quarter: Q1
+    group: Waveform & timing
+    owner: radar-hw
+    source: TS-1 (open)
+    drives: penetration, antenna length, resolution
+
+  bandwidth:
+    name: Chirp bandwidth
+    symbol: B
+    value: 10e6
+    unit: Hz
+    range: [1e6, 20e6]
+    status: assumed
+    quarter: Q1
+    group: Waveform & timing
+    owner: radar-hw
+    source: TS-1 (open)
+    drives: vertical resolution, sample rate, data rate
+    notes: Sounders usually keep B at or below about half of f0.
+
+  chirp_length:
+    name: Chirp length
+    symbol: T
+    value: 50e-6
+    unit: s
+    range: [10e-6, 150e-6]
+    status: assumed
+    quarter: Q1
+    group: Waveform & timing
+    owner: radar-hw
+    source: EQ-08, EQ-14
+    drives: pulse-compression gain T·B, duty cycle
+    notes: Must end before the surface echo starts returning at the lowest altitude.
+
+  prf:
+    name: Pulse repetition frequency
+    symbol: PRF
+    value: 1000
+    unit: Hz
+    range: [100, 3000]
+    status: assumed
+    quarter: Q1
+    group: Waveform & timing
+    owner: radar-hw
+    source: EQ-10, EQ-14
+    drives: along-track sampling, power, data rate
+
+  window_length:
+    name: Receive window length
+    symbol: t_win
+    value: 40e-6
+    unit: s
+    range: [15e-6, 100e-6]
+    status: assumed
+    quarter: Q1
+    group: Waveform & timing
+    owner: radar-hw
+    source: EQ-01 + terrain margin
+    drives: data volume, depth coverage
+
+  window_margin:
+    name: Window opens this early before the predicted surface echo
+    symbol: t_pre
+    value: 5e-6
+    unit: s
+    range: [1e-6, 20e-6]
+    status: assumed
+    quarter: Q1
+    group: Waveform & timing
+    owner: radar-hw
+    source: altitude-prediction error (GNC)
+    drives: timing check, data volume
+
+  tr_recovery_time:
+    name: T/R switch and receiver recovery time
+    symbol: t_rec
+    value: 5e-6
+    unit: s
+    range: [1e-6, 20e-6]
+    status: assumed
+    quarter: Q1
+    group: Waveform & timing
+    owner: radar-hw
+    source: parts (TBD)
+    drives: timing check
+
+  range_window:
+    name: Pulse-compression window function
+    value: hann
+    unit: "-"
+    status: assumed
+    quarter: Q1
+    group: Waveform & timing
+    owner: processing
+    source: EQ-08 note
+    drives: sidelobes vs ~1–2 dB SNR loss
+
+  # ---------------------------------------------------------------- Radar hardware
+  tx_peak_power:
+    name: Transmit peak power (RF)
+    symbol: P_t
+    value: 10
+    unit: W
+    range: [2, 100]
+    status: assumed
+    quarter: Q1
+    group: Radar hardware
+    owner: radar-hw
+    source: trade with EPS; SHARAD transmits 10 W (seu2007)
+    drives: SNR, peak DC power
+
+  pa_efficiency:
+    name: Power amplifier efficiency (DC → RF)
+    symbol: η_PA
+    value: 0.4
+    unit: "-"
+    range: [0.2, 0.7]
+    status: assumed
+    quarter: Q1
+    group: Radar hardware
+    owner: radar-hw
+    source: parts (TBD)
+    drives: DC power, heat
+
+  radar_idle_power:
+    name: Radar electronics power while on (excluding the amplifier)
+    symbol: P_idle
+    value: 5
+    unit: W
+    range: [2, 15]
+    status: assumed
+    quarter: Q1
+    group: Radar hardware
+    owner: radar-hw
+    source: parts (TBD)
+    drives: energy per day
+
+  antenna_type:
+    name: Antenna type
+    value: half-wave dipole, deployable
+    unit: "-"
+    status: assumed
+    quarter: Q1
+    group: Radar hardware
+    owner: radar-hw
+    source: TS-2 (open)
+    drives: gain, pattern, deployment design
+
+  antenna_length:
+    name: Antenna tip-to-tip length
+    symbol: L_ant
+    value: 7.5
+    unit: m
+    range: [2, 30]
+    status: assumed
+    quarter: Q1
+    group: Radar hardware
+    owner: radar-hw
+    source: TS-2 (open); half-wave = c / (2 f0)
+    drives: efficiency, usable bandwidth, stowage
+
+  antenna_gain:
+    name: Antenna gain
+    symbol: G
+    value: 2.15
+    unit: dBi
+    range: [0, 3]
+    status: assumed
+    quarter: Q1
+    group: Radar hardware
+    owner: radar-hw
+    source: half-wave dipole textbook value
+    drives: SNR
+
+  antenna_efficiency:
+    name: Antenna radiation efficiency
+    symbol: η_ant
+    value: 0.7
+    unit: "-"
+    range: [0.2, 0.95]
+    status: assumed
+    quarter: Q1
+    group: Radar hardware
+    owner: radar-hw
+    source: team estimate
+    drives: SNR
+    notes: Electrically short dipoles can be much lower. The spacecraft body is part of the antenna at HF.
+
+  receiver_noise_figure:
+    name: Receiver noise figure
+    symbol: NF
+    value: 3
+    unit: dB
+    range: [1, 8]
+    status: assumed
+    quarter: Q1
+    group: Radar hardware
+    owner: radar-hw
+    source: parts (TBD)
+    drives: system noise (secondary to galactic noise at HF)
+
+  adc_bits:
+    name: ADC resolution
+    symbol: n_ADC
+    value: 12
+    unit: bit
+    range: [8, 16]
+    status: assumed
+    quarter: Q1
+    group: Radar hardware
+    owner: radar-hw
+    source: parts (TBD)
+    drives: dynamic range, raw data rate
+
+  adc_sample_rate:
+    name: ADC sample rate
+    symbol: f_s
+    value: 50e6
+    unit: Hz
+    range: [20e6, 250e6]
+    status: assumed
+    quarter: Q1
+    group: Radar hardware
+    owner: radar-hw
+    source: parts (TBD)
+    drives: samples per trace, data rate
+
+  sampling_architecture:
+    name: Sampling architecture
+    value: direct RF sampling
+    unit: "-"
+    status: assumed
+    quarter: Q1
+    group: Radar hardware
+    owner: radar-hw
+    source: trade (open)
+    drives: ADC choice, sample rate
+
+  clock_stability:
+    name: Clock phase stability needed over the SAR aperture time
+    value: null
+    unit: "-"
+    status: TBD
+    quarter: Q1
+    group: Radar hardware
+    owner: radar-hw
+    source: SAR phase-error budget
+    drives: coherence for presumming and SAR
+    notes: Express as Allan deviation at the aperture time (see BUDGET.md) or as phase noise.
+
+  dynamic_range_required:
+    name: Dynamic range, surface echo vs deepest buried echo
+    value: null
+    unit: dB
+    status: TBD
+    quarter: Q1
+    group: Radar hardware
+    owner: radar-hw
+    source: BUDGET.md (surface vs buried SNR)
+    drives: gain plan, ADC bits
+
+  # ---------------------------------------------------------------- Data & downlink
+  presum_factor:
+    name: Presum factor
+    symbol: N
+    value: 16
+    unit: "-"
+    range: [1, 64]
+    status: assumed
+    quarter: Q1
+    group: Data & downlink
+    owner: processing
+    source: TS-3 (open)
+    drives: SNR ×N, data ÷N, SAR sampling limit
+
+  requant_bits:
+    name: Bits per sample after presumming
+    symbol: n_req
+    value: 8
+    unit: bit
+    range: [4, 16]
+    status: assumed
+    quarter: Q1
+    group: Data & downlink
+    owner: processing
+    source: TS-3 (open)
+    drives: data volume, dynamic range
+
+  obs_time_per_day:
+    name: Radar observing time per day
+    symbol: t_obs
+    value: 1800
+    unit: s
+    range: [300, 7200]
+    status: assumed
+    quarter: Q1
+    group: Data & downlink
+    owner: systems
+    source: observation plan
+    drives: data volume, energy
+
+  contact_time_per_day:
+    name: Ground-contact time per day for radar data
+    symbol: t_contact
+    value: 14400
+    unit: s
+    range: [3600, 43200]
+    status: assumed
+    quarter: Q1
+    group: Data & downlink
+    owner: comms
+    source: comms team (placeholder)
+    drives: required downlink rate
+
+  downlink_rate:
+    name: Downlink data rate available for radar data
+    symbol: R_dl
+    value: null
+    unit: bit/s
+    range: [1e3, 1e6]
+    status: TBD
+    quarter: Q1
+    group: Data & downlink
+    owner: comms
+    source: comms link budget
+    drives: whether raw downlink closes
+    notes: Lunar distance adds ≈ 58 dB of path loss compared with a 500 km LEO link (see BUDGET.md).
+
+  downlink_frequency:
+    name: Downlink frequency
+    symbol: f_dl
+    value: 8.4e9
+    unit: Hz
+    range: [2.0e9, 8.5e9]
+    status: assumed
+    quarter: Q1
+    group: Data & downlink
+    owner: comms
+    source: comms team (X-band placeholder)
+    drives: path loss
+
+  mass_memory:
+    name: Onboard memory available for radar data
+    value: null
+    unit: B
+    range: [1e9, 64e9]
+    status: TBD
+    quarter: Q1
+    group: Data & downlink
+    owner: systems
+    source: C&DH team
+    drives: buffering between contacts
+
+  # ---------------------------------------------------------------- Processing
+  system_losses:
+    name: Other losses (window, roughness, pointing, implementation)
+    symbol: L_sys
+    value: 3
+    unit: dB
+    range: [1, 10]
+    status: assumed
+    quarter: Q1
+    group: Processing
+    owner: processing
+    source: team estimate
+    drives: final SNR
+
+  multilook_count:
+    name: Multilook count
+    symbol: L
+    value: 4
+    unit: "-"
+    range: [1, 16]
+    status: assumed
+    quarter: Q2
+    group: Processing
+    owner: processing
+    source: team
+    drives: speckle vs along-track resolution
+
+  sar_algorithm:
+    name: SAR focusing algorithm
+    value: back-projection
+    unit: "-"
+    status: assumed
+    quarter: Q2
+    group: Processing
+    owner: processing
+    source: cumming2005
+    drives: accuracy, run time
+
+  detection_rule:
+    name: Detection rule
+    value: null
+    unit: "-"
+    status: TBD
+    quarter: Q2
+    group: Processing
+    owner: processing
+    source: Q2 detection analysis
+    drives: false alarms vs missed tubes
+    notes: e.g. peak above SNR_req inside the void window and absent from the clutter simulation.
+
+  # ---------------------------------------------------------------- Simulation (Q2)
+  sim_sample_rate:
+    name: Simulation complex sample rate
+    value: 20e6
+    unit: Hz
+    range: [10e6, 100e6]
+    status: assumed
+    quarter: Q2
+    group: Simulation
+    owner: processing
+    source: team (must be ≥ bandwidth)
+    drives: run time, fidelity
+
+  sim_track_length:
+    name: Simulated along-track distance
+    value: 20e3
+    unit: m
+    range: [5e3, 100e3]
+    status: assumed
+    quarter: Q2
+    group: Simulation
+    owner: processing
+    source: team
+    drives: run time, how many apertures fit
+
+  void_model:
+    name: How the void is modeled
+    value: two flat interfaces (roof, floor) with vacuum between
+    unit: "-"
+    status: assumed
+    quarter: Q2
+    group: Simulation
+    owner: scene
+    source: team
+    drives: echo generator
+
+  snr_tolerance:
+    name: Allowed difference between simulated and budget SNR
+    value: 2
+    unit: dB
+    range: [0.5, 3]
+    status: assumed
+    quarter: Q2
+    group: Simulation
+    owner: systems
+    source: verification plan
+    drives: pass/fail of test V-05
+
+  trace_format:
+    name: Trace data format between modules
+    value: "complex array [n_traces, n_samples] + metadata dict (t0, fs, x, h)"
+    unit: "-"
+    status: assumed
+    quarter: Q2
+    group: Simulation
+    owner: processing
+    source: q2-simulation/interfaces.md
+    drives: every module interface
+
+  # ---------------------------------------------------------------- Realism & analysis (Q3)
+  dem_resolution:
+    name: Elevation-model resolution used for clutter
+    value: null
+    unit: m
+    range: [5, 120]
+    status: TBD
+    quarter: Q3
+    group: Realism & analysis
+    owner: scene
+    source: LOLA products available for the target sites
+    drives: clutter fidelity, run time
+
+  clutter_method:
+    name: Clutter simulation method
+    value: facet-based (each elevation-model facet is a scatterer)
+    unit: "-"
+    status: assumed
+    quarter: Q3
+    group: Realism & analysis
+    owner: scene
+    source: team
+    drives: clutter discrimination (step 23)
+
+  monte_carlo_runs:
+    name: Monte Carlo runs per design point
+    value: 200
+    unit: "-"
+    range: [50, 1000]
+    status: assumed
+    quarter: Q3
+    group: Realism & analysis
+    owner: systems
+    source: team
+    drives: confidence of the detectability map
+
+  clock_phase_noise_model:
+    name: Clock phase-noise model used in the simulation
+    value: null
+    unit: "-"
+    status: TBD
+    quarter: Q3
+    group: Realism & analysis
+    owner: radar-hw
+    source: oscillator datasheet
+    drives: SAR coherence losses
+
+  tan_delta_sweep:
+    name: Basalt loss-tangent values to sweep
+    value: [0.003, 0.01, 0.03, 0.06]
+    unit: "-"
+    status: assumed
+    quarter: Q3
+    group: Realism & analysis
+    owner: scene
+    source: range of tan_delta_basalt
+    drives: detectability map

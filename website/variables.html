@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HS-3 GPR Variables</title>
+<meta name="description" content="HS-3 GPR design variables, their status, and the budget they imply.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="topbar">
+  <span class="brand">HS-3 GPR</span>
+  <nav class="nav" aria-label="Pages">
+    <a href="index.html">Flowchart</a>
+    <a href="variables.html" aria-current="page">Variables &amp; budget</a>
+    <a data-repo-path="" hidden>GitHub repo</a>
+  </nav>
+</div>
+
+<header class="masthead">
+  <p class="eyebrow">HS-3 GPR · Variable register</p>
+  <h1>Design variables</h1>
+  <p class="lede">Every design number, its status and where it came from, plus the budget those numbers imply. This page rebuilds from <span class="mono">params/variables.yaml</span> after every change on main.</p>
+  <a class="edit-link" data-repo-path="/edit/main/params/variables.yaml" hidden>Edit variables on GitHub</a>
+</header>
+
+<section class="sec" aria-labelledby="h-progress">
+  <div class="sec-head"><h2 id="h-progress">Progress by quarter</h2>
+  <p class="sec-note">A variable is pinned down when it is derived from an analysis or frozen by a decision.</p></div>
+  <div class="progress" id="progress"></div>
+  <div class="legend" id="legend"></div>
+</section>
+
+<section class="sec" aria-labelledby="h-vars">
+  <div class="sec-head"><h2 id="h-vars">Variables</h2></div>
+  <div class="controls">
+    <div class="filters" role="group" aria-label="Quarter" id="qfilter"></div>
+    <select id="status-filter" aria-label="Status"><option value="">All statuses</option></select>
+    <select id="owner-filter" aria-label="Owner"><option value="">All owners</option></select>
+    <input type="search" id="search" placeholder="Search name, key or source" aria-label="Search variables">
+    <span class="count" id="count"></span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Variable</th><th scope="col">Value</th><th scope="col">Range considered</th><th scope="col">Status</th><th scope="col">Quarter</th><th scope="col">Owner</th><th scope="col">Source</th></tr></thead>
+      <tbody id="var-rows"><tr><td colspan="7" class="muted">Loading the register…</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="h-budget">
+  <div class="sec-head"><h2 id="h-budget">Budget from these numbers</h2>
+  <p class="sec-note">Computed by <span class="mono">hs3gpr/budget.py</span> (equations EQ-01 to EQ-15). ✓ passes a requirement, ✗ fails one, … needs an input that is still TBD.</p></div>
+  <div class="sumchips" id="budget-summary"></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Quantity</th><th scope="col" style="text-align:right">Value</th><th scope="col">Unit</th><th scope="col">Equation</th><th scope="col">Check</th></tr></thead>
+      <tbody id="budget-rows"><tr><td colspan="5" class="muted">Loading the budget…</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<footer class="foot">Edit numbers in <span class="mono">params/variables.yaml</span>, never on this page. The same tables live in the repo as <span class="mono">params/REGISTER.md</span> and <span class="mono">q1-baseline/BUDGET.md</span>.</footer>
+</div>
+<script src="assets/common.js"></script>
+<script src="assets/variables.js"></script>
+</body>
+</html>

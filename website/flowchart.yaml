@@ -1,0 +1,521 @@
+# =============================================================================
+#  TEAM FLOWCHART · the website's flowchart page is drawn from this file
+#  Edit the text, commit to main, and the website updates in about a minute.
+# =============================================================================
+#  Steps are numbered automatically in the order they appear.
+#
+#  place:    ground | spacecraft | moon | downlink   (sets the lane color)
+#  arrow:    label on the arrow to the next stage
+#  kind:     hardware | firmware | software | physics   (icon + Highlight filters)
+#  label:    small text next to the icon, e.g. "RF hardware"
+#  summary:  one line shown on the box
+#  lead:     optional longer first line in the detail panel (defaults to summary)
+#  snr:      true → counts as an SNR step for the Highlight filter
+#  badges:   short amber tags, e.g. ["SNR ×N", "Data ÷N"]
+#  uses:     names of support subsystems (must match a `name` under support)
+#  details:  any headings you like, each with a list of bullet points
+#
+#  Step numbers written inside text ("step 19") are plain text: update them by
+#  hand if you insert or remove steps.
+# =============================================================================
+
+eyebrow: HS-3 · Lunar ground-penetrating radar · Team onboarding
+title: From radar pulse to subsurface map
+lede: 'How a generic version of our GPR works end to end: every hardware, firmware and software piece involved, and where presumming and SAR pull faint buried echoes out of the noise.'
+one_line: Send a radio chirp straight down, record the echoes from the surface and from the layers and voids beneath it, then add many echoes together (a little onboard by presumming, a lot on the ground by SAR) until the faint buried ones rise above the noise.
+assumptions:
+  Altitude: 30–100 km
+  Depth: ≤ 500 m
+  Target: lunar lava tubes
+  Onboard: presumming
+  Downlink: raw data
+  Ground: pulse compression + SAR
+stages:
+- place: ground
+  place_label: Ground
+  name: Plan the pass
+  arrow: command timeline (uplink)
+  steps:
+  - title: Mission planning
+    kind: software
+    label: Ground software
+    summary: Picks targets and orbit passes, then writes the radar's command timeline.
+    uses:
+    - Orbit
+    details:
+      What it does:
+      - 'Chooses where to sound: skylights, rilles and mare plains with suspected lava tubes.'
+      - Finds when the orbit passes over them.
+      - 'Writes time-tagged commands: radar on/off, PRF, chirp settings, gain, presum factor N, receive-window timing.'
+      Why it matters:
+      - The radar uses a lot of power and makes a lot of data, so it runs only over targets, a few minutes at a time.
+      Inputs:
+      - Predicted orbit, power budget, storage and downlink budget, results from earlier passes (step 25).
+      Can change:
+      - Tools and level of automation. Some planning could later move onboard.
+  - title: Uplink
+    kind: hardware
+    label: Ground station + radio
+    summary: Ground station sends the timeline up to the spacecraft radio.
+    lead: The ground station sends the timeline up to the spacecraft radio.
+    details:
+      What it does:
+      - Transmits the command timeline; the spacecraft radio hands it to the flight computer.
+      Why it matters:
+      - The observation runs later on its own, often with no ground contact at that moment.
+      Can change:
+      - Radio band and ground-station network.
+- place: spacecraft
+  place_label: Spacecraft
+  name: Get ready
+  arrow: trigger every 1/PRF
+  steps:
+  - title: Flight computer
+    kind: hardware
+    label: Flight computer + software
+    summary: 'Runs the timeline: powers the radar and loads its settings on time.'
+    lead: 'Runs the stored timeline: powers the radar and loads its settings on time.'
+    details:
+      What it does:
+      - 'Command and Data Handling (C&DH): executes the timeline, configures the radar, starts and stops observations.'
+      - Collects housekeeping (temperatures, voltages, currents) and routes radar data to storage.
+      Why it matters:
+      - Keeps the radar in step with power, pointing and communications.
+      On HS-3:
+      - Receives attitude from LOST and orbit estimates from FOUND. Both feed window timing and are logged with the data.
+  - title: Radar controller
+    kind: firmware
+    label: FPGA firmware
+    summary: Fires pulses, flips TX/RX and opens the receive window at the right delay.
+    lead: 'The radar''s conductor: fires pulses, flips the T/R switch and opens the receive window at the right delay.'
+    uses:
+    - Clock
+    - Orbit
+    details:
+      What it does:
+      - Triggers a pulse every 1/PRF.
+      - Drives the T/R switch.
+      - Starts the ADC after a delay set from the predicted altitude.
+      - Sets receiver gain and counts pulses for presumming.
+      Why it matters:
+      - Timing is everything. The surface echo returns 0.20–0.67 ms after each pulse (30–100 km).
+      - The buried echoes we want sit in the next ≈ 5.5–9 µs.
+      Knobs:
+      - PRF, window delay and length, gain, presum factor N.
+      Can change:
+      - FPGA, or a microcontroller plus a timing chip.
+- place: spacecraft
+  place_label: Spacecraft
+  name: Transmit
+  arrow: radio pulse (chirp)
+  steps:
+  - title: Chirp generator
+    kind: firmware
+    label: FPGA + DAC
+    summary: 'Makes a chirp: a tens-of-µs pulse sweeping from low to high frequency.'
+    lead: 'Makes the chirp: a pulse tens of µs long that sweeps from low to high frequency.'
+    uses:
+    - Clock
+    details:
+      What it does:
+      - Synthesizes a linear frequency sweep with center frequency f0, bandwidth B and length T.
+      Why a chirp:
+      - A long pulse carries more energy, which means more echo, but on its own it blurs depth.
+      - A chirp can be squeezed back into a sharp spike on the ground (step 19), so we get both energy and sharpness.
+      Knobs:
+      - 'B sets depth resolution: e.g. 10 MHz gives ≈ 6–9 m in lunar rock and regolith.'
+      - 'T must end before the surface echo starts returning: under 0.2 ms at 30 km.'
+      Can change:
+      - DDS chip, FPGA + DAC, or playback of a stored waveform.
+  - title: Transmitter
+    kind: hardware
+    label: RF hardware
+    summary: Amplifies the chirp to high power for a short burst.
+    uses:
+    - Power
+    - Thermal
+    details:
+      What it does:
+      - A power amplifier boosts the chirp; an output filter removes harmonics.
+      Why it matters:
+      - Echoes from hundreds of meters down are extremely faint. More transmitted power means more echo.
+      - For scale, SHARAD on Mars Reconnaissance Orbiter transmits 10 W.
+      Limits:
+      - Peak and average power from the power system, and heat.
+      Can change:
+      - Amplifier technology, e.g. GaN or LDMOS.
+  - title: T/R switch
+    kind: hardware
+    label: RF hardware
+    summary: Connects the antenna to the transmitter for the pulse, then to the receiver.
+    lead: Connects the antenna to the transmitter during the pulse, then to the receiver.
+    details:
+      What it does:
+      - Switches the single antenna between transmit and receive on the controller's timing (step 4).
+      Why it matters:
+      - The receiver must be shielded from the transmit burst, or it overloads or gets damaged.
+  - title: Antenna
+    kind: hardware
+    label: RF hardware
+    summary: Meters-long deployable dipole. Sends the pulse down and catches the echoes.
+    lead: A deployable dipole, meters long, that sends the pulse down and catches the echoes.
+    uses:
+    - Attitude
+    details:
+      What it does:
+      - Radiates the chirp toward the surface and receives the echoes. Dipole plus matching network, deployed after launch.
+      Why it is so long:
+      - 'At tens of MHz the wavelength is meters: 20 MHz → 15 m, 50 MHz → 6 m.'
+      - 'A half-wave dipole is half that: 7.5 m or 3 m tip to tip.'
+      Side effect:
+      - A dipole sees a very wide patch of ground. This is why clutter happens and why SAR is needed.
+      Can change:
+      - Tape-spring dipole, crossed dipoles, length set by the chosen frequency.
+  side_path:
+    title: Calibration loopback
+    kind: hardware
+    label: RF hardware
+    summary: A small copy of each chirp goes straight to the receiver and is recorded as the reference for pulse compression (step 19).
+    lead: A small copy of each chirp is recorded as the reference for pulse compression.
+    details:
+      What it does:
+      - Routes an attenuated sample of the transmitted chirp straight into the receiver and records it.
+      Why it matters:
+      - Pulse compression (step 19) needs the exact transmitted waveform, including hardware distortion and temperature drift.
+      When:
+      - Periodically during observations; sent down with the science data.
+- place: moon
+  place_label: Moon
+  name: Down, in and back
+  arrow: echoes + clutter + noise
+  steps:
+  - title: Down and back
+    kind: physics
+    label: Physics
+    summary: 'Round trip at light speed: 0.20 ms at 30 km, 0.67 ms at 100 km.'
+    lead: The pulse crosses 30–100 km at light speed and comes back.
+    details:
+      What happens:
+      - The pulse spreads as it travels. One pulse lights up a ground patch about 1–2.5 km across at 50 km altitude.
+      Why it matters:
+      - Round-trip time (2h/c) sets when the receive window opens and how long the chirp can be.
+      Numbers:
+      - 0.20 ms at 30 km · 0.33 ms at 50 km · 0.67 ms at 100 km.
+  - title: Surface and buried echoes
+    kind: physics
+    label: Physics
+    summary: Surface echoes first and strongest. Layers and voids echo later, faintly.
+    lead: The surface echoes first and strongest; layers and voids echo later and faintly.
+    details:
+      What happens:
+      - Part of the pulse reflects at the surface. The rest continues into the ground.
+      - Underground the wave slows to ≈ 0.4–0.6 × light speed (permittivity εr ≈ 2.7 for regolith to ≈ 7 for solid basalt) and loses energy as it goes.
+      - 'It reflects wherever the material changes: regolith to basalt, between lava flows, at voids.'
+      Lava tubes:
+      - Rock → empty space → rock is a big contrast, so the roof and the floor can each return an echo.
+      Numbers:
+      - 500 m of depth ≈ 5.5–9 µs after the surface echo.
+  - title: Clutter and noise
+    kind: physics
+    label: Physics
+    summary: Terrain off to the side and cosmic radio noise hide the buried echoes.
+    details:
+      Clutter:
+      - Hills and crater rims off to the side can be just as far away as a layer straight below. Their echoes arrive at the same time and look like layers.
+      - SAR (step 21) suppresses clutter ahead of and behind the spacecraft. Simulation (step 23) flags clutter to the left and right.
+      Noise:
+      - At these frequencies, radio noise from the galaxy usually dominates.
+      - Receiver noise, spacecraft electronics and Earth's radio leakage over the near side add to it.
+      Result:
+      - In a single pulse, buried echoes are usually below the noise. Steps 14, 19 and 21 dig them out.
+- place: spacecraft
+  place_label: Spacecraft
+  name: Receive
+  arrow: digitized traces
+  steps:
+  - title: Receiver
+    kind: hardware
+    label: RF hardware
+    summary: Low-noise amp, filters and gain bring faint echoes up to ADC level.
+    lead: Amplifies faint echoes without adding much noise, and keeps the strong surface echo in range.
+    uses:
+    - Thermal
+    details:
+      What it does:
+      - Antenna → T/R switch → limiter (protection) → low-noise amplifier (LNA) → band-pass filter → adjustable gain.
+      Why it matters:
+      - Noise added here is noise the processing has to beat later.
+      - Too much gain and the surface echo saturates the ADC; too little and buried echoes fall below its smallest step.
+      Can change:
+      - Sample directly at RF, or shift to a lower frequency first.
+  - title: Digitizer (ADC)
+    kind: hardware
+    label: Digital hardware
+    summary: Samples only the receive window. One trace (numbers vs time) per pulse.
+    lead: Turns the echo voltage into numbers, only inside the receive window.
+    uses:
+    - Clock
+    details:
+      What it does:
+      - Samples the receiver output (e.g. 12–14 bit) on the master clock.
+      - 'Produces one trace per pulse: a list of samples against time.'
+      Example:
+      - 40 µs window × 50 MS/s = 2,000 samples per trace.
+      Why only a window:
+      - Recording just the slice around the surface plus 500 m of depth keeps the data volume manageable.
+- place: spacecraft
+  place_label: Spacecraft
+  name: Presum and store
+  arrow: presummed raw data + tags
+  steps:
+  - title: Coherent presumming
+    kind: firmware
+    label: FPGA firmware
+    summary: Adds N back-to-back traces. Echoes add up; random noise partly cancels.
+    lead: Adds N back-to-back traces sample by sample. Echoes add up; random noise partly cancels.
+    snr: true
+    badges:
+    - SNR ×N
+    - Data ÷N
+    details:
+      What it does:
+      - Sums N consecutive traces (e.g. N = 16) and keeps only the sum.
+      Why it works:
+      - Over 16 pulses the spacecraft moves only ≈ 26 m (1 kHz PRF at ≈ 1.6 km/s), so echoes from below stay lined up.
+      - Noise is random from pulse to pulse and partly cancels.
+      Gain:
+      - SNR × N (16 → +12 dB). Data ÷ N.
+      Limit:
+      - Too large an N blurs echoes from slightly ahead or behind and leaves SAR too few samples per meter of track.
+      - N is a trade between data volume and SAR quality.
+      Link to SAR:
+      - Presumming is a short, simple version of step 21. SAR finishes the job on the ground with full geometry.
+  - title: Format and tag
+    kind: software
+    label: Flight software / FPGA
+    summary: Packs traces with time tags, settings and calibration chirps.
+    lead: Packs the traces with the timing and settings the ground needs.
+    details:
+      What it does:
+      - Optional requantization (fewer bits per sample) and packetizing.
+      - 'Tags every frame: time, window delay, gain, N, PRF, mode, temperatures.'
+      - Adds the periodic calibration chirps.
+      Why it matters:
+      - Without exact timing and settings, the ground cannot rebuild the geometry that SAR needs.
+  - title: Mass memory
+    kind: hardware
+    label: Digital hardware
+    summary: Holds the data until the next ground contact.
+    details:
+      Example:
+      - 1.5 Mbit/s for a 10-minute pass ≈ 110 MB.
+      Why it matters:
+      - Observations happen over targets; contacts happen when a ground station is in view. Storage bridges the gap.
+- place: downlink
+  place_label: Spacecraft → Ground
+  name: Downlink
+  arrow: raw files on the ground
+  steps:
+  - title: Downlink
+    kind: hardware
+    label: Radio + ground station
+    summary: Sends the raw presummed data and housekeeping to the ground station.
+    lead: Sends the raw, presummed data and housekeeping to the ground station.
+    uses:
+    - Power
+    details:
+      What it does:
+      - Transmits stored data during ground contacts.
+      Why raw:
+      - Pulse compression and SAR need computing power and time that the ground has and the spacecraft does not.
+      Constraint:
+      - Downlink rate × contact time caps radar data per day. That cap drives N and how long the radar can run.
+      Can change:
+      - Radio band (e.g. S- or X-band) and ground network.
+- place: ground
+  place_label: Ground
+  name: Prepare the data
+  arrow: compressed, aligned traces
+  steps:
+  - title: Decode and clean
+    kind: software
+    label: Ground software
+    summary: Unpacks, orders and checks traces; filters out interference.
+    lead: Unpacks, orders and checks the traces, and removes interference.
+    details:
+      What it does:
+      - Reassembles traces in time order and attaches their tags.
+      - Flags gaps and bad frames; undoes onboard scaling.
+      - Filters radio interference.
+      Output:
+      - Clean raw traces plus metadata (Level 0).
+  - title: Pulse compression
+    kind: software
+    label: Ground software
+    summary: Matched filter squeezes each long chirp echo into a sharp spike.
+    lead: A matched filter squeezes each long chirp echo into a sharp spike.
+    snr: true
+    badges:
+    - SNR ×T·B
+    details:
+      What it does:
+      - Correlates each trace with the recorded reference chirp from the calibration loopback. Also called range compression.
+      Gain:
+      - '≈ T × B: e.g. 50 µs × 10 MHz = 500 → +27 dB.'
+      - A window (e.g. Hann) lowers sidelobes and costs ≈ 1–2 dB.
+      Resolution:
+      - Depth resolution ≈ c / (2B√εr).
+  - title: Geometry and alignment
+    kind: software
+    label: Ground software
+    summary: Pins down where the spacecraft was for every trace; aligns timing.
+    lead: Works out where the spacecraft was for every trace and lines up their timing.
+    uses:
+    - Orbit
+    - Attitude
+    details:
+      What it does:
+      - Combines the reconstructed orbit (FOUND + ground tracking), attitude (LOST) and the timing tags.
+      - Computes the distance to the surface for each trace and shifts all traces onto one time reference.
+      Why it matters:
+      - SAR adds echoes recorded at many positions. Position errors smear the result; autofocus can correct small ones.
+      Optional:
+      - Ionosphere correction. Important at Mars; usually small at the Moon.
+- place: ground
+  place_label: Ground
+  name: Focus with SAR
+  arrow: focused radargram
+  steps:
+  - title: SAR focusing
+    kind: software
+    label: Ground software
+    summary: Lines up and adds M echoes from about a km of track, like one giant antenna.
+    lead: Lines up and adds M echoes from about a kilometer of track, acting like one giant antenna.
+    snr: true
+    badges:
+    - SNR ×M
+    details:
+      What it does:
+      - For each point along the track, takes the M presummed traces recorded while that point was in view.
+      - Corrects each trace's delay and phase for its changing distance to the point, then adds them.
+      Gain:
+      - SNR × M (e.g. M = 100 → +20 dB).
+      Also improves:
+      - Along-track resolution, from a km-wide footprint to roughly hundreds of meters or better.
+      - Suppresses clutter ahead of and behind the spacecraft. Left/right clutter remains (step 23).
+      Can change:
+      - Algorithm (back-projection, range-Doppler, delay-Doppler) and autofocus.
+  - title: Multilook
+    kind: software
+    label: Ground software
+    summary: Averages neighboring focused traces into a smoother radargram.
+    snr: true
+    badges:
+    - Speckle ↓
+    details:
+      What it does:
+      - Averages the power of L neighboring focused traces.
+      Trade:
+      - Less speckle and noise flicker; slightly coarser along-track resolution.
+      Output:
+      - 'Radargram: along-track distance across, echo delay (depth) down, brightness for echo strength.'
+- place: ground
+  place_label: Ground
+  name: Interpret
+  steps:
+  - title: Clutter check
+    kind: software
+    label: Ground software
+    summary: Simulates surface-only echoes from an elevation map. Matches are clutter.
+    lead: Simulates surface-only echoes from a lunar elevation map. Echoes that match are clutter.
+    uses:
+    - Orbit
+    details:
+      What it does:
+      - Uses a digital elevation model (e.g. from LRO's LOLA laser altimeter) and the real orbit to predict where surface echoes land in the radargram.
+      Rule:
+      - An echo in both the data and the simulation is surface clutter.
+      - An echo only in the data is a subsurface candidate.
+  - title: Time to depth
+    kind: software
+    label: Ground software
+    summary: Converts echo delay into depth using the rock's permittivity.
+    details:
+      Formula:
+      - depth = c · Δt / (2√εr), with Δt measured from the surface echo.
+      Input:
+      - 'εr assumed or estimated: ≈ 2.7 for regolith to ≈ 7 for basalt.'
+      Watch:
+      - εr is the largest source of depth error. Those two values give depths that differ by ≈ 1.6×.
+  - title: Products and next targets
+    kind: software
+    label: Ground software
+    summary: Radargrams, depth maps and lava-tube candidates. These pick the next targets.
+    lead: Radargrams, depth maps and lava-tube candidates, which feed the next plan.
+    details:
+      Products:
+      - Radargrams, depth sections, reflector maps and a lava-tube candidate list, archived with metadata.
+      What a lava tube can look like:
+      - 'In Kaguya radar data at Marius Hills: echo power drops sharply, then a strong second echo follows.'
+      Loop:
+      - 'Results go back to planning (step 1): re-target, repeat passes, adjust N or the chirp.'
+loop_label: results and new targets go back to step 1
+support:
+- name: Clock
+  title: Master clock
+  kind: hardware
+  label: Hardware
+  summary: One stable reference for chirp, ADC and timing. Keeps every pulse coherent.
+  lead: One stable reference frequency for the chirp generator, the ADC and the radar controller.
+  details:
+    Why it matters:
+    - Presumming and SAR add echoes together. That only works if every pulse starts with the same phase.
+    - A shared, stable clock keeps the whole radar coherent from pulse to pulse.
+    Can change:
+    - Oven-controlled crystal oscillator (OCXO) or better; PLLs derive the other clocks from it.
+- name: Power
+  title: Power (EPS)
+  kind: hardware
+  label: Hardware
+  summary: Solar panels, battery and distribution, plus a capacitor bank for transmit bursts.
+  lead: Solar panels, battery and power distribution, plus a capacitor bank for the transmit bursts.
+  details:
+    Why it matters:
+    - The transmitter draws high peak power in short bursts. Capacitors keep the bus voltage steady.
+    - Average power sets how many minutes per orbit the radar can run.
+    Note:
+    - Steps 6 and 17 draw the most; every powered box depends on it.
+- name: Attitude
+  title: Attitude (ADCS + LOST)
+  kind: hardware
+  label: Hardware + software
+  summary: Reaction wheels point the antenna down; the LOST star tracker measures orientation.
+  lead: Reaction wheels point the spacecraft; the LOST star tracker measures which way it is facing.
+  details:
+    Why it matters:
+    - The antenna should face straight down (nadir) during observations.
+    - The logged orientation tells ground processing how the antenna was pointed for every trace.
+- name: Orbit
+  title: Orbit (FOUND + tracking)
+  kind: software
+  label: Software + propulsion
+  summary: Knows where the spacecraft is. Sets window timing onboard and SAR geometry on the ground.
+  lead: Knows where the spacecraft is and keeps it in the 30–100 km band.
+  details:
+    What it does:
+    - FOUND estimates position and velocity onboard from camera images.
+    - Ground tracking refines the trajectory after the fact.
+    - Propulsion reaches and holds the science orbit. Low lunar orbits drift because the Moon's gravity is uneven.
+    Why it matters:
+    - Onboard, the predicted altitude sets when the receive window opens (step 4).
+    - On the ground, the reconstructed trajectory is the backbone of SAR focusing (steps 20 and 21).
+- name: Thermal
+  title: Thermal
+  kind: hardware
+  label: Hardware
+  summary: Sensors and heaters keep the radar electronics in their working range.
+  lead: Temperature sensors and heaters keep the radar electronics in range.
+  details:
+    Why it matters:
+    - The transmitter heats up during bursts.
+    - Oscillator and receiver performance drift with temperature, so temperatures are logged with the data.
