@@ -62,12 +62,8 @@ Big choices get a [decision record](docs/decisions/).
 
 ---
 
-## One-time setup (team lead)
+## One-time setup (Jean)
 
-- [ ] Create the repo: easiest is **GitHub Desktop → File → Add local repository →** pick the unzipped `hs3-gpr` folder →
-      *create a repository* → **Publish repository**. (Uploading in the browser works too, but your file browser may hide
-      the `.github` folder and `.gitignore`; on macOS press ⌘⇧. in Finder to show them, and include them.)
-- [ ] **Settings → Collaborators:** invite teammates (*Write* role)
 - [ ] **Issues → Labels:** add `Q1`, `Q2`, `Q3`, `task`, `variable`, `research`, `decision`, `sim`, `docs`
 - [ ] **Projects → New project → Board:** columns *To do / In progress / Review / Done*; add one issue per deliverable
 - [ ] Replace owner roles (`systems`, `radar-hw`, …) in `params/variables.yaml` with GitHub usernames
@@ -75,5 +71,5 @@ Big choices get a [decision record](docs/decisions/).
 - [ ] Optional website: see [`website/README.md`](website/README.md) (two settings)
 - [ ] Optional: **Settings → Branches →** protect `main` (require a pull request). If you do, the table-refresh bot can't push;
       run `python tools/register.py` and `python -m hs3gpr.budget --markdown q1-baseline/BUDGET.md` in your pull requests instead
-- [ ] Add a license if the repo will be public (e.g. MIT)
+- [ ] Add a license if the repo will be public (e.g. uw)
 - [ ] Create the Zotero group library and import `refs/references.bib`
