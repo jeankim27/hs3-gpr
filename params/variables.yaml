@@ -21,8 +21,9 @@
 #              frozen   → agreed baseline; change only with a decision record (DR-xxx)
 #    quarter   Q1 | Q2 | Q3 — when it must be pinned down
 #    group     Category (used to group tables)
-#    owner     GitHub username, or a role until people are assigned:
-#              systems | radar-hw | scene | processing | comms | eps | gnc | structures
+#    owner     Role tag (docs/roles.md; the Team table in README.md says who holds each role):
+#              systems | radar-hw | scene | processing | sim       our team
+#              comms | eps | gnc | structures                      contacts in other HS-3 subteams
 #    source    Citation key from refs/references.bib, EQ-ID, TS-ID, DR-ID, notebook, or "team"
 #    drives    What this variable affects
 #    notes     Anything else
@@ -820,7 +821,7 @@ variables:
     status: assumed
     quarter: Q2
     group: Simulation
-    owner: processing
+    owner: sim
     source: team (must be ≥ bandwidth)
     drives: run time, fidelity
 
@@ -832,7 +833,7 @@ variables:
     status: assumed
     quarter: Q2
     group: Simulation
-    owner: processing
+    owner: sim
     source: team
     drives: run time, how many apertures fit
 
@@ -855,7 +856,7 @@ variables:
     status: assumed
     quarter: Q2
     group: Simulation
-    owner: systems
+    owner: sim
     source: verification plan
     drives: pass/fail of test V-05
 
@@ -866,7 +867,7 @@ variables:
     status: assumed
     quarter: Q2
     group: Simulation
-    owner: processing
+    owner: sim
     source: q2-simulation/interfaces.md
     drives: every module interface
 
@@ -902,7 +903,7 @@ variables:
     status: assumed
     quarter: Q3
     group: Realism & analysis
-    owner: systems
+    owner: sim
     source: team
     drives: confidence of the detectability map
 

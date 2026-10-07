@@ -8,7 +8,7 @@ the plans, the interface contract and the notebooks.
 
 ## Deliverables
 
-- [ ] **D2.1 Architecture and interfaces** · [`interfaces.md`](interfaces.md) · owner: processing · due week 11
+- [ ] **D2.1 Architecture and interfaces** · [`interfaces.md`](interfaces.md) · owner: sim · due week 11
 - [ ] **D2.2 Scene model v1** · `hs3gpr/sim/scene.py` · owner: scene · due week 12
   Flat surface, regolith over basalt, one void, point targets. *(Data classes exist; add what the echo generator needs.)*
 - [ ] **D2.3 Echo generator + receiver/ADC** · `hs3gpr/sim/echo.py`, `receiver.py` · owners: scene, radar-hw · due week 16
@@ -17,8 +17,8 @@ the plans, the interface contract and the notebooks.
   *(Presumming and requantization work; add data-volume accounting that matches BUDGET.md.)*
 - [ ] **D2.5 Ground processing v1** · `hs3gpr/sim/ground.py` · owner: processing · due week 17
   *(Range compression, multilook and time-to-depth work; build SAR back-projection.)*
-- [ ] **D2.6 Verification suite passes** · [`verification-plan.md`](verification-plan.md) · owner: systems · due week 19
-- [ ] **D2.7 Demo radargram of a synthetic lava tube** · `notebooks/02_lava_tube_demo.ipynb` (create it) · owner: everyone · week 20
+- [ ] **D2.6 Verification suite passes** · [`verification-plan.md`](verification-plan.md) · owner: sim · due week 19
+- [ ] **D2.7 Demo radargram of a synthetic lava tube** · `notebooks/02_lava_tube_demo.ipynb` (create it) · owner: everyone (lead: sim) · week 20
 
 ## Weekly plan
 

@@ -25,8 +25,8 @@ no value     placeholder       backed by an      agreed baseline;
 
 ## Conventions
 - **Units:** SI in the file (Hz, m, s, W, bit/s, B). Tables show prefixes (MHz, km, µs) for you.
-- **Owner:** roles to start (`systems`, `radar-hw`, `scene`, `processing`, `comms`, `eps`, `gnc`,
-  `structures`); replace with GitHub usernames once people are assigned.
+- **Owner:** a role tag. Our team: `systems`, `radar-hw`, `scene`, `processing`, `sim` (see [`docs/roles.md`](../docs/roles.md)). Other HS-3 subteams: `comms`, `eps`, `gnc`, `structures`.
+  The Team table in the main README says who holds each role, so tags never need renaming.
 - **Source:** a citation key from `refs/references.bib`, an equation (`EQ-04`), a trade (`TS-1`),
   a decision (`DR-001`), a notebook, or `team`.
 - **New variable:** copy any block, give it a new lowercase key, fill every field.

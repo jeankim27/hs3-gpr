@@ -133,11 +133,11 @@ Status: 🔴 **TBD** no value yet · 🟡 **assumed** placeholder, needs a sourc
 
 | Variable | Symbol | Value | Range considered | Status | Owner | Source |
 |---|---|---|---|---|---|---|
-| **Simulation complex sample rate**<br>`sim_sample_rate` |  | 20 MHz | 10 MHz – 100 MHz | 🟡 assumed | processing | team (must be ≥ bandwidth) |
-| **Simulated along-track distance**<br>`sim_track_length` |  | 20 km | 5 km – 100 km | 🟡 assumed | processing | team |
+| **Simulation complex sample rate**<br>`sim_sample_rate` |  | 20 MHz | 10 MHz – 100 MHz | 🟡 assumed | sim | team (must be ≥ bandwidth) |
+| **Simulated along-track distance**<br>`sim_track_length` |  | 20 km | 5 km – 100 km | 🟡 assumed | sim | team |
 | **How the void is modeled**<br>`void_model` |  | two flat interfaces (roof, floor) with vacuum between |  | 🟡 assumed | scene | team |
-| **Allowed difference between simulated and budget SNR**<br>`snr_tolerance` |  | 2 dB | 0.5 dB – 3 dB | 🟡 assumed | systems | verification plan |
-| **Trace data format between modules**<br>`trace_format` |  | complex array [n_traces, n_samples] + metadata dict (t0, fs, x, h) |  | 🟡 assumed | processing | q2-simulation/interfaces.md |
+| **Allowed difference between simulated and budget SNR**<br>`snr_tolerance` |  | 2 dB | 0.5 dB – 3 dB | 🟡 assumed | sim | verification plan |
+| **Trace data format between modules**<br>`trace_format` |  | complex array [n_traces, n_samples] + metadata dict (t0, fs, x, h) |  | 🟡 assumed | sim | q2-simulation/interfaces.md |
 
 <a id="q3"></a>
 ## Q3 · pin down by week 30
@@ -148,7 +148,7 @@ Status: 🔴 **TBD** no value yet · 🟡 **assumed** placeholder, needs a sourc
 |---|---|---|---|---|---|---|
 | **Elevation-model resolution used for clutter**<br>`dem_resolution` |  | TBD | 5 m – 120 m | 🔴 TBD | scene | LOLA products available for the target sites |
 | **Clutter simulation method**<br>`clutter_method` |  | facet-based (each elevation-model facet is a scatterer) |  | 🟡 assumed | scene | team |
-| **Monte Carlo runs per design point**<br>`monte_carlo_runs` |  | 200 | 50 – 1,000 | 🟡 assumed | systems | team |
+| **Monte Carlo runs per design point**<br>`monte_carlo_runs` |  | 200 | 50 – 1,000 | 🟡 assumed | sim | team |
 | **Clock phase-noise model used in the simulation**<br>`clock_phase_noise_model` |  | TBD |  | 🔴 TBD | radar-hw | oscillator datasheet |
 | **Basalt loss-tangent values to sweep**<br>`tan_delta_sweep` |  | 0.003, 0.01, 0.03, 0.06 |  | 🟡 assumed | scene | range of tan_delta_basalt |
 

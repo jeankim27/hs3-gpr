@@ -16,7 +16,7 @@ Open one GitHub issue per deliverable (**Issues → New issue → Deliverable ta
 - [ ] **D1.4 Trade studies TS-1, TS-2, TS-3 + decision records** · [`2-trades/`](2-trades/) · owners: radar-hw, processing · due week 8
 - [ ] **D1.5 Interface agreements** · [`3-budgets.md`](3-budgets.md) · owner: systems · due week 9
   Power, data per day, mass and volume, orbit and attitude knowledge, agreed with each subteam lead.
-- [ ] **D1.6 Toolchain** · repo, Zotero group, notebooks running for everyone · owner: systems · due week 2
+- [ ] **D1.6 Toolchain** · repo, Zotero group, notebooks running for everyone · owner: sim · due week 2
 - [ ] **D1.7 Baseline review** · [`4-baseline-review.md`](4-baseline-review.md) · owner: systems · week 10
 
 ## Weekly plan

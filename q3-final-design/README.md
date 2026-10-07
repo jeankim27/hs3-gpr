@@ -14,7 +14,7 @@ within the spacecraft's limits?
   Orbit and attitude knowledge errors, clock phase noise, altitude variation, ADC clipping, interference tones.
 - [ ] **D3.4 Clutter discrimination demo** · notebook · owner: processing · due week 25
   Radargram next to its clutter simulation; candidates that survive.
-- [ ] **D3.5 Detectability map** · [`analysis-plan.md`](analysis-plan.md) · owner: systems · due week 26
+- [ ] **D3.5 Detectability map** · [`analysis-plan.md`](analysis-plan.md) · owner: sim · due week 26
   Smallest detectable tube vs depth across `tan_delta_sweep` (Monte Carlo).
 - [ ] **D3.6 Trades rerun, register frozen** · `params/variables.yaml` · owner: everyone · due week 28
 - [ ] **D3.7 System closure** · [`closure.md`](closure.md) · owner: systems · due week 28
