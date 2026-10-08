@@ -20,8 +20,8 @@ replace **TBD** with your name and GitHub handle (pencil icon → *Commit change
 | Role | Tag | Owns | Member | GitHub | Backup |
 |---|---|---|---|---|---|
 | Systems lead | `systems` | Requirements, register, budgets, reviews, final report · steps 1–3, 25 | Jean Kim | @jeankim27 | `sim` |
-| RF & antenna | `radar-hw` | Frequency, antenna, transmitter, receiver, ADC, clock · steps 4–8, 12–13 | TBD | TBD | `processing` |
-| Lunar science & scene | `scene` | Lunar materials, lava tubes, sites, attenuation, clutter, noise · steps 9–11, 23–24 | TBD | TBD | `systems` |
+| RF & antenna | `radar-hw` | Frequency, antenna, transmitter, receiver, ADC, clock · steps 4–8, 12–13 | Anday Cai | @M4rxz4n | `scene` |
+| Lunar science & scene | `scene` | Lunar materials, lava tubes, sites, attenuation, clutter, noise · steps 9–11, 23–24 | Omar Awani | @ | `systems` |
 | Signal processing | `processing` | Presumming, downlink trade, pulse compression, SAR, detection · steps 14, 17, 19–22 | TBD | TBD | `radar-hw` |
 | Simulation & software | `sim` | Simulation framework, tests, notebooks, repo and website · steps 15–16, 18 | TBD | TBD | `systems` |
 
