@@ -23,3 +23,4 @@
 | Fresnel zone | The patch of ground that dominates a nadir echo from a smooth surface. |
 | Register | `params/variables.yaml`, the one place design numbers live. |
 | TS / DR | Trade study (how we compared options) / decision record (what we decided). |
+| UWB | Ultra-wide band |

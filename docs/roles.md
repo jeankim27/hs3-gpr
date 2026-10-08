@@ -6,19 +6,13 @@ The role tags (`systems`, `radar-hw`, `scene`, `processing`, `sim`) are the `own
 [`params/variables.yaml`](../params/variables.yaml) and the owners listed on each quarter's deliverables.
 Picking a role tells you exactly which variables, flowchart steps and deliverables are yours.
 
-## How to pick
-1. Read the roles below.
-2. Agree at the first weekly sync: one owner per role.
-3. Put your name and GitHub handle in the **Team** table in the main [README](../README.md)
-   (pencil icon → *Commit changes*).
-
 Fewer than five people? One person takes two roles. Good pairs: `radar-hw` + `processing`, or `systems` + `sim`.
 
 ## The five roles
 
 | Role | Tag | Owns (flowchart steps) | Main deliverables | Good fit |
 |---|---|---|---|---|
-| **Systems lead** | `systems` | Requirements, variable register, budgets, reviews, final report · steps 1–3, 25 | D1.1, D1.3, D1.5, D1.7, D3.7, D3.8 | Organized, comfortable with numbers; any engineering major |
+| **Systems lead** | `systems` | Requirements, variable register, budgets, reviews, final report · steps 1–3, 25 | D1.1, D1.3, D1.5, D1.7, D3.7, D3.8 | Organized, comfortable with numbers; |
 | **RF & antenna** | `radar-hw` | Frequency choice, chirp, transmitter, T/R switch, antenna, receiver, ADC, clock, calibration loopback · steps 4–8, 12–13 | TS-1, TS-2, receiver/ADC model (D2.3), error sources (D3.3) | EE: electromagnetics, circuits |
 | **Lunar science & scene** | `scene` | Lunar materials (εr, tanδ), lava-tube sizes, target sites, attenuation, clutter, noise, depth conversion · steps 9–11, 23–24 | Environment research, scene model (D2.2), echo physics (D2.3), LOLA terrain and clutter (D3.1–D3.2) | Physics, Earth & space sciences; a strong researcher |
 | **Signal processing** | `processing` | Presumming, downlink trade, pulse compression, geometry, SAR, multilook, detection · steps 14, 17, 19–22 | TS-3, onboard model (D2.4), SAR focusing (D2.5), clutter discrimination (D3.4) | EE signals/DSP, math, Python |
@@ -57,6 +51,6 @@ Each role has a backup who can cover during midterms or if someone leaves. Pairs
 |---|---|
 | `systems` | `sim` |
 | `sim` | `systems` |
-| `radar-hw` | `processing` |
+| `radar-hw` | `scene` |
 | `processing` | `radar-hw` |
 | `scene` | `systems` |
