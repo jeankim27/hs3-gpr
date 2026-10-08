@@ -76,15 +76,3 @@ Short version (full version in [`CONTRIBUTING.md`](CONTRIBUTING.md)):
 Big choices get a [decision record](docs/decisions/).
 
 ---
-
-## One-time setup (Jean)
-
-- [ ] **Issues → Labels:** add `Q1`, `Q2`, `Q3`, `task`, `variable`, `research`, `decision`, `sim`, `docs`
-- [ ] **Projects → New project → Board:** columns *To do / In progress / Review / Done*; add one issue per deliverable
-- [ ] Everyone picks a role ([`docs/roles.md`](docs/roles.md)) and fills in the **Team** table above (role tags in `params/variables.yaml` stay as they are)
-- [ ] **Settings → Actions → General → Workflow permissions:** *Read and write* (lets the bot refresh REGISTER.md and BUDGET.md)
-- [ ] Optional website: see [`website/README.md`](website/README.md) (two settings)
-- [ ] Optional: **Settings → Branches →** protect `main` (require a pull request). If you do, the table-refresh bot can't push;
-      run `python tools/register.py` and `python -m hs3gpr.budget --markdown q1-baseline/BUDGET.md` in your pull requests instead
-- [ ] Add a license if the repo will be public (e.g. uw)
-- [ ] Create the Zotero group library and import `refs/references.bib`
