@@ -14,13 +14,10 @@ works in simulation, built in three 10-week quarters.
 
 Project lead: Jean Kim ([@jeankim27](https://github.com/jeankim27))
 
-Roles are open. Read [`docs/roles.md`](docs/roles.md), agree at the first sync who takes which role, then
-replace **TBD** with your name and GitHub handle (pencil icon → *Commit changes*).
-
 | Role | Tag | Owns | Member | GitHub | Backup |
 |---|---|---|---|---|---|
 | Systems lead | `systems` | Requirements, register, budgets, reviews, final report · steps 1–3, 25 | Jean Kim | @jeankim27 | `sim` |
-| RF & antenna | `radar-hw` | Frequency, antenna, transmitter, receiver, ADC, clock · steps 4–8, 12–13 | Anday Cai | @M4rxz4n | `scene` |
+| RF & antenna | `radar-hw` | Frequency, antenna, transmitter, receiver, ADC, clock · steps 4–8, 12–13 | Andy Cai | @M4rxz4n | `scene` |
 | Lunar science & scene | `scene` | Lunar materials, lava tubes, sites, attenuation, clutter, noise · steps 9–11, 23–24 | Omar Awani | @ | `systems` |
 | Signal processing | `processing` | Presumming, downlink trade, pulse compression, SAR, detection · steps 14, 17, 19–22 | TBD | TBD | `radar-hw` |
 | Simulation & software | `sim` | Simulation framework, tests, notebooks, repo and website · steps 15–16, 18 | TBD | TBD | `systems` |
