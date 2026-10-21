@@ -44,7 +44,7 @@ Each area has one owner who makes its decisions and keeps its numbers in [`param
 <a id="area-2"></a>
 ## 2. Target sites & regional data
 
-- **Owns:** Candidate lava-tube list and selection criteria. Regional context for each site: DEMs (LOLA, SLDEM, LROC NAC DTMs), imagery, composition maps. Data download and catalog.
+- **Owns:** Candidate lava-tube list within the target regions (Oceanus Procellarum and Mare Imbrium) and selection criteria. Regional context for each site: DEMs (LOLA, SLDEM, LROC NAC DTMs), imagery, composition maps. Data download and catalog.
 - **Q1:** Site shortlist and a data inventory per site.
 - **Q2:** Per-site data package used by the models; site ranking.
 - **Q3:** Final target(s) with meter-scale surface data.

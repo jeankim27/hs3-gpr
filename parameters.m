@@ -26,7 +26,8 @@ p.roof_depth_max  = 500;    % deepest tube roof to detect [m]         [11] assum
 p.tube_height_min = NaN;    % smallest tube height to detect [m]      [2]  range 20-200 m, literature
 p.tube_width_min  = NaN;    % smallest tube width to detect [m]       [2]  range 50-1000 m, literature
 p.snr_required    = 10;     % SNR after processing for detection [dB] [11] assumed, range 6-15 dB
-p.target_sites    = {'Marius Hills Hole', 'Mare Tranquillitatis Hole', 'Mare Ingenii Hole'}; % [2] assumed, kaku2017; haruyama2009
+p.target_regions  = {'Oceanus Procellarum', 'Mare Imbrium'};  % [2]  decided, team focus (HS-3 mission statement)
+p.target_sites    = {'Marius Hills Hole'};  % [2]  assumed, haruyama2009; kaku2017 (Procellarum). Add candidates in both regions (D1.3)
 
 %% Lunar materials  [area 1]
 p.eps_regolith       = 2.7;    % rel. permittivity, regolith [-]      assumed, olhoeft1975 (rho ~1.5 g/cm3), range 2.3-3.5

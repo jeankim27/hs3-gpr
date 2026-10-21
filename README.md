@@ -2,6 +2,8 @@
 
 Ground-penetrating radar (radar sounder) for **HuskySat-3**, a UW Husky Satellite Lab lunar CubeSat that will map lava tubes beneath the Moon's surface.
 
+**Target regions:** Oceanus Procellarum and Mare Imbrium, the two largest smooth basaltic plains on the nearside and the most likely places for lava tubes to form. Candidate sites within them are listed in [`parameters.m`](parameters.m) (`p.target_sites`) and chosen by [Area 2](ownership.md#area-2).
+
 Project lead: Jean Kim ([@jeankim27](https://github.com/jeankim27))
 
 ## Goal for this year

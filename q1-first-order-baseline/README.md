@@ -14,7 +14,7 @@ Owners are listed in [ownership.md](../ownership.md). When you add a file, link 
 |---|---|---|---|
 | D1.1 | First-order SNR model that reads `parameters.m`; every area's term plugs in | [11](../ownership.md#area-11) + all | |
 | D1.2 | Dielectric model: εr, tanδ and attenuation ranges for regolith, basalt and void | [1](../ownership.md#area-1) | |
-| D1.3 | Site shortlist and data inventory per site: DEMs, NAC DTMs, composition maps, prior sounder data | [2](../ownership.md#area-2) | |
+| D1.3 | Site shortlist in Oceanus Procellarum and Mare Imbrium, and data inventory per site: DEMs, NAC DTMs, composition maps, prior sounder data | [2](../ownership.md#area-2) | |
 | D1.4 | Roughness-loss term using literature roughness values | [3](../ownership.md#area-3) | |
 | D1.5 | Antenna options versus frequency: length, gain, pattern, deployment feasibility | [4](../ownership.md#area-4) | |
 | D1.6 | Waveform and transmit-power options; pulse-compression gain | [5](../ownership.md#area-5) | |
