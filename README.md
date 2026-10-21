@@ -1,78 +1,54 @@
-# HS-3 GPR · Design model
+# HS-3 GPR
 
-Design and simulation of the ground-penetrating radar (radar sounder) on **HuskySat-3**, a lunar CubeSat
-that will map lava tubes beneath the Moon's surface. Goal for this year: a complete design model that
-works in simulation, built in three 10-week quarters.
-
-| Quarter | Question | Folder |
-|---|---|---|
-| **Q1** · weeks 1–10 | Can the design close on paper? | [`q1-baseline/`](q1-baseline/) |
-| **Q2** · weeks 11–20 | Does the signal chain work end to end? | [`q2-simulation/`](q2-simulation/) |
-| **Q3** · weeks 21–30 | Does it find a lava tube under realistic conditions, within spacecraft limits? | [`q3-final-design/`](q3-final-design/) |
-
-## Team
+Ground-penetrating radar (radar sounder) for **HuskySat-3**, a UW Husky Satellite Lab lunar CubeSat that will map lava tubes beneath the Moon's surface.
 
 Project lead: Jean Kim ([@jeankim27](https://github.com/jeankim27))
 
-| Role | Tag | Owns | Member | GitHub | Backup |
-|---|---|---|---|---|---|
-| Systems lead | `systems` | Requirements, register, budgets, reviews, final report · steps 1–3, 25 | Jean Kim | @jeankim27 | `sim` |
-| RF & antenna | `radar-hw` | Frequency, antenna, transmitter, receiver, ADC, clock · steps 4–8, 12–13 | Andy Cai | @M4rxz4n | `scene` |
-| Lunar science & scene | `scene` | Lunar materials, lava tubes, sites, attenuation, clutter, noise · steps 9–11, 23–24 | Omar Alawi | @ | `systems` |
-| Signal processing | `processing` | Presumming, downlink trade, pulse compression, SAR, detection · steps 14, 17, 19–22 | TBD | TBD | `radar-hw` |
-| Simulation & software | `sim` | Simulation framework, tests, notebooks, repo and website · steps 15–16, 18 | TBD | TBD | `systems` |
+## Goal for this year
 
-The role tags are the `owner:` values in [`params/variables.yaml`](params/variables.yaml), so they never need renaming
-when people change. Liaisons to other HS-3 subteams are listed in [`docs/roles.md`](docs/roles.md).
+By week 30, show with first- and second-order models that HS-3 can detect a lava tube at a chosen site through surface clutter. Then freeze the frequency, observation strategy and hardware requirements so we can start building next year.
 
----
+By the end of the year we will have:
 
-## New here? Start with these four steps
+1. **Design decisions:** target site, frequency and bandwidth, orbit and observation strategy.
+2. **Detectability result:** whether the tube is visible through clutter after processing, at that site.
+3. **Build readiness:** frozen hardware requirements, benchtop demos, and a build plan for next year.
 
-1. **See how the radar works:** the flowchart on the team website (link in the repo's *About* box), or
-   [`website/flowchart.yaml`](website/flowchart.yaml) as text.
-2. **See the numbers:** [`params/REGISTER.md`](params/REGISTER.md) (every design variable and its status) and
-   [`q1-baseline/BUDGET.md`](q1-baseline/BUDGET.md) (what those numbers imply).
-3. **See this quarter's work:** the README in the current quarter folder.
-4. **Pick a role, then a task:** [`docs/roles.md`](docs/roles.md), then the [Issues](../../issues) tab, or ask in the weekly sync.
+## Quarters
 
-## Where things live
+| Quarter | Question | Modeling | Ends with |
+|---|---|---|---|
+| [**Q1** · weeks 1–10](q1-first-order-baseline/) | Which frequencies could work at all? | First-order, generic lunar surface | Frequency band narrowed to 1–2 candidates |
+| [**Q2** · weeks 11–20](q2-sites-and-decision/) | Which frequency, at which site, with which orbit? | First-order at real sites, plus signal-to-clutter ratio (SCR) | **Frequency and target decision** (week 20) |
+| [**Q3** · weeks 21–30](q3-second-order-and-hardware/) | Can we see the tube through the clutter, and what do we build? | Second-order, plus hardware development | Hardware requirements frozen |
 
-| Folder | What's in it |
+## Who owns what
+
+[**ownership.md**](ownership.md) lists the 12 ownership areas, what each one covers, and who owns it.
+
+## Where things go
+
+| File or folder | What's in it |
 |---|---|
-| [`params/`](params/) | **The variable register.** The only place design numbers are typed. |
-| [`q1-baseline/`](q1-baseline/), [`q2-simulation/`](q2-simulation/), [`q3-final-design/`](q3-final-design/) | Each quarter's deliverables: checklists, trade studies, plans, notebooks |
-| [`hs3gpr/`](hs3gpr/) | Python code shared by all quarters: `budget.py` (Q1 equations), `sim/` (Q2–Q3 simulation) |
-| [`docs/`](docs/) | [Equations](docs/equations.md), [decision records](docs/decisions/), [reading list](docs/reading-list.md), [glossary](docs/glossary.md), [team roles](docs/roles.md), meeting notes |
-| [`refs/`](refs/) | `references.bib`, exported from the team's Zotero group library |
-| [`tests/`](tests/) | Checks that run on every pull request |
-| [`tools/`](tools/) | `register.py` (check + build the register table), `build_site.py` (team website) |
-| [`website/`](website/) | Optional team website: flowchart + live register (GitHub Pages) |
+| [`parameters.m`](parameters.m) | Shared input numbers for everyone's MATLAB models. The only place a shared number is typed. |
+| [`q1-first-order-baseline/`](q1-first-order-baseline/), [`q2-sites-and-decision/`](q2-sites-and-decision/), [`q3-second-order-and-hardware/`](q3-second-order-and-hardware/) | Each quarter's goal, deliverables, and the work itself |
+| [`ownership.md`](ownership.md) | Ownership areas and owners |
+| [`notes/`](notes/) | Meeting notes, starting with [Adrian's advice (JPL)](notes/2026-10-adrian-jpl.md) |
 
-## The one rule
+## Three rules
 
-**A number lives in exactly one place: [`params/variables.yaml`](params/variables.yaml).**
-Code, notebooks, `BUDGET.md`, `REGISTER.md` and the website all read it. To change a design value, change it
-there (see [`params/README.md`](params/README.md)) and everything else follows.
+1. **Name files by deliverable.** Put work in the current quarter's folder, starting with its deliverable ID: `D1.2_dielectric_model.m`, `D1.2_attenuation_vs_depth.png`.
+2. **Shared numbers live in `parameters.m`.** Load them with `p = parameters();`, and don't retype them in your own script. If you change one, say so at the weekly sync.
+3. **Cite a source for every number,** as a comment next to it.
 
-## Run things
+## Using `parameters.m`
 
-**In the browser (no installs):** Google Colab → *File → Open notebook → GitHub* → paste this repo's URL →
-pick a notebook. The first cell asks for `owner/repo` and loads the code.
+From any quarter folder in MATLAB:
 
-**On your computer:**
-```bash
-git clone <this repo's URL> && cd <repo folder>
-pip install -r requirements.txt
-python -m hs3gpr.budget          # the budget from the register
-python tools/register.py         # check the register, rebuild REGISTER.md
-pytest                           # all checks; skipped tests say what to build next
+```matlab
+addpath('..');        % make parameters.m visible
+p = parameters();     % load the shared numbers
+lambda = p.c / p.f_center;
 ```
 
-## How we work
-
-Short version (full version in [`CONTRIBUTING.md`](CONTRIBUTING.md)):
-**issue → branch → pull request → one reviewer → merge.** Cite a source for every number.
-Big choices get a [decision record](docs/decisions/).
-
----
+The earlier Python design model is kept at the tag [`v0-old-structure`](https://github.com/jeankim27/hs3-gpr/tree/v0-old-structure).
