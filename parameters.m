@@ -14,7 +14,7 @@ function p = parameters()
 %     - Changed a value? Say so at the weekly sync.
 %
 %   Area numbers refer to ownership.md. Starting values were carried over
-%   from the old variable register (tag v0-old-structure).
+%   from the old variable register (commit 182ab91).
 
 %% Physical constants
 p.c   = 299792458;          % speed of light [m/s]

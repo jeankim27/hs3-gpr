@@ -51,4 +51,4 @@ p = parameters();     % load the shared numbers
 lambda = p.c / p.f_center;
 ```
 
-The earlier Python design model is kept at the tag [`v0-old-structure`](https://github.com/jeankim27/hs3-gpr/tree/v0-old-structure).
+The earlier Python design model is kept in history: [browse the old version](https://github.com/jeankim27/hs3-gpr/tree/182ab915dc7354da9153c5e57de83ab7cf84bf5a).
