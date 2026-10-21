@@ -1,0 +1,4 @@
+# MATLAB autosave and temporary files
+*.asv
+*.m~
+slprj/
