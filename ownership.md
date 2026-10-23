@@ -1,23 +1,61 @@
 # Ownership
 
-Each area has one owner who makes its decisions and keeps its numbers in [`parameters.m`](parameters.m). Most people own two areas. Load is relative within this team: L light, M medium, H heavy.
+Each area has one owner who makes its decisions and keeps its numbers in [`parameters.m`](parameters.m). A co-owner works alongside the owner and is usually taking the area over. Load is relative within this team: L light, M medium, H heavy.
 
-**To fill in an owner:** replace `TBD` with `[Name](https://github.com/username)`.
+## Team
 
-| # | Area | Owner | Q1 | Q2 | Q3 |
-|---|---|---|---|---|---|
-| 1 | [Lunar materials & dielectrics](#area-1) | TBD | H | M | M |
-| 2 | [Target sites & regional data](#area-2) | TBD | H | H | M |
-| 3 | [Surface roughness & clutter](#area-3) | TBD | M | H | H |
-| 4 | [Antenna](#area-4) | TBD | H | M | H |
-| 5 | [Transmitter & waveform](#area-5) | TBD | M | M | H |
-| 6 | [Receiver, ADC & clock](#area-6) | TBD | M | M | H |
-| 7 | [Radar timing & control](#area-7) | TBD | L | M | H |
-| 8 | [Power, onboard data & downlink](#area-8) | TBD | M | M | M |
-| 9 | [Ground processing](#area-9) | TBD | M | H | H |
-| 10 | [Orbit & observation geometry](#area-10) | TBD | M | H | M |
-| 11 | [Systems integration & SNR/SCR model](#area-11) | [Jean Kim](https://github.com/jeankim27) | H | M | H |
-| 12 | [Simulation code & repo](#area-12) | TBD | L | M | M |
+| Name | Program | Status |
+|---|---|---|
+| [Jean Kim](https://github.com/jeankim27) | MSE, senior | Project lead · leaves after Q3 |
+| Omar Alawi | ECE, junior | Continuing · hardware focus |
+| Andy Cai | ECE, master's | Graduates before Q3 |
+| Alex McNutt | ECE, sophomore | New member · next year's systems owner |
+| Cris Hernandez | ECE, junior | New member |
+
+**To add a GitHub link:** replace a plain name with `[Name](https://github.com/username)`.
+
+## Who owns what
+
+"A (B co-owns)" means A leads and B co-owns. "Archived" means the results live in the year-end report and `parameters.m`, with no owner in the build year.
+
+| # | Area | Q1–Q2 | Q3 | Next year (build) | Load Q1 | Q2 | Q3 |
+|---|---|---|---|---|---|---|---|
+| 1 | [Lunar materials & dielectrics](#area-1) | Jean | Jean | Archived | H | M | M |
+| 2 | [Target sites & regional data](#area-2) | Omar | Omar | Archived | H | H | M |
+| 3 | [Surface roughness & clutter](#area-3) | Jean + Alex (Alex leads Q2) | Alex | Archived | M | H | H |
+| 4 | [Antenna](#area-4) | Andy (Omar co-owns) | Omar | Omar | H | M | H |
+| 5 | [Transmitter & waveform](#area-5) | Omar | Omar | Omar | M | M | H |
+| 6 | [Receiver, ADC & clock](#area-6) | Andy + Alex (Alex leads Q2) | Alex | Alex | M | M | H |
+| 7 | [Radar timing & control](#area-7) | Alex (Cris co-owns) | Alex (Cris co-owns) | Alex (Cris co-owns) | L | M | H |
+| 8 | [Power, onboard data & downlink](#area-8) | Andy (Cris co-owns) | Cris | Cris | M | M | M |
+| 9 | [Ground processing](#area-9) | Omar | Omar | Omar | M | H | H |
+| 10 | [Orbit & observation geometry](#area-10) | Jean | Jean | Archived | M | H | M |
+| 11 | [Systems integration & SNR/SCR model](#area-11) | Jean | Jean (Alex shadows) | Alex | H | M | H |
+| 12 | [Simulation code & repo](#area-12) | Jean (merged into 11) | Jean (merged into 11) | Alex (merged into 11) | L | M | M |
+
+Area 12 is part of the lead role: with MATLAB and a simple repo, integration doesn't need its own owner.
+
+## Handoffs
+
+- **Q1:** Andy leads 4, 6 and 8, with Omar co-owning 4, Alex co-owning 6 and Cris co-owning 8. Alex co-owns 3 with Jean.
+- **Q2:** Alex takes the lead on 3 and 6; Jean and Andy review.
+- **Week 20, Andy hands off:** at the frequency and target decision review, Alex presents 6, Cris presents 8 and Omar presents 4.
+- **Q3:** Alex shadows 11 (decision records, requirements freeze, reviews).
+- **Week 30, Jean hands off:** the year-end report and `parameters.m` carry areas 1–3 and 10 forward. Alex owns 11 next year.
+
+## Workload
+
+Points per quarter: H = 3, M = 2, L = 1, co-owning or shadowing = 1.
+
+| Person | Q1 | Q2 | Q3 |
+|---|---|---|---|
+| Jean | 11 | 10 | 9 |
+| Omar | 8 | 9 | 11 |
+| Andy | 7 | 5 | graduated |
+| Alex | 3 | 7 | 10 |
+| Cris | 2 | 2 | 3 |
+
+Open items: whether to keep the Monte Carlo runs in D3.4 now that Cris has joined, and whether Cris takes on more, since Cris has the lightest load and stays for the build year.
 
 ## Liaisons to other HS-3 subteams
 
