@@ -9,7 +9,7 @@ Each area has one owner who makes its decisions and keeps its numbers in [`param
 | [Jean Kim](https://github.com/jeankim27) | MSE, senior | Project lead · leaves after Q3 |
 | Omar Alawi | ECE, junior | Continuing · hardware focus |
 | Andy Cai | ECE, master's | Graduates before Q3 |
-| Alex McNutt | ECE, sophomore | New member · next year's systems owner |
+| Alex McNutt | ECE, sophomore | New member |
 | Cris Hernandez | ECE, junior | New member |
 
 **To add a GitHub link:** replace a plain name with `[Name](https://github.com/username)`.
